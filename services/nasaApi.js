@@ -11,10 +11,15 @@ const ROVERS = {
       { name: 'FHAZ', fullName: 'Front Hazard Avoidance Camera' },
       { name: 'RHAZ', fullName: 'Read Hazard Avoidance Camera' },
       { name: 'MAST', fullName: 'Mast Camera' },
+      { name: 'MAST_LEFT', fullName: 'Mast Camera - Left' },
+      { name: 'MAST_RIGHT', fullName: 'Mast Camera - Right' },
       { name: 'CHEMCAM', fullName: 'Chemistry and Camera Complex' },
+      { name: 'CHEMCAM_RMI', fullName: 'Chemistry and Camera Complex - Remote Micro Imager' },
       { name: 'MAHLI', fullName: 'Mars Hand Lens Imager' },
       { name: 'MARDI', fullName: 'Mars Descent Imager' },
-      { name: 'NAVCAM', fullName: 'Navigation Camera' }
+      { name: 'NAVCAM', fullName: 'Navigation Camera' },
+      { name: 'NAV_LEFT_A', fullName: 'Navigation Camera - Left A' },
+      { name: 'NAV_RIGHT_A', fullName: 'Navigation Camera - Right A' }
     ]
   },
   perseverance: {
@@ -71,6 +76,50 @@ const ROVERS = {
 };
 
 /**
+ * Map camera name to category (FHAZ, RHAZ, MAST)
+ * Returns the category name if the camera belongs to one, otherwise returns null
+ */
+function getCameraCategory(cameraName) {
+  if (!cameraName) return null;
+  const upper = cameraName.toUpperCase();
+  
+  // FHAZ category: Front Hazard Avoidance Camera
+  if (upper.startsWith('FHAZ') || upper.includes('FRONT_HAZ') || upper.includes('FRONT HAZ')) {
+    return 'FHAZ';
+  }
+  
+  // RHAZ category: Rear Hazard Avoidance Camera
+  if (upper.startsWith('RHAZ') || upper.includes('REAR_HAZ') || upper.includes('REAR HAZ') || upper.includes('READ HAZ')) {
+    return 'RHAZ';
+  }
+  
+  // MAST category: Mast Camera
+  if (upper.startsWith('MAST')) {
+    return 'MAST';
+  }
+  
+  return null;
+}
+
+/**
+ * Check if a camera matches the filter category
+ */
+function matchesCameraFilter(cameraName, filterCategory) {
+  if (!filterCategory) return true;
+  
+  const filterUpper = filterCategory.toUpperCase();
+  const cameraCategory = getCameraCategory(cameraName);
+  
+  // If filter is one of the three categories, match by category
+  if (['FHAZ', 'RHAZ', 'MAST'].includes(filterUpper)) {
+    return cameraCategory === filterUpper;
+  }
+  
+  // Otherwise, do exact match (for backward compatibility)
+  return cameraName && cameraName.toUpperCase() === filterUpper;
+}
+
+/**
  * Get Curiosity photos from mars.nasa.gov API
  */
 async function getCuriosityPhotos(params = {}) {
@@ -89,9 +138,8 @@ async function getCuriosityPhotos(params = {}) {
     
     // Filter by camera if specified
     if (camera) {
-      const cameraUpper = camera.toUpperCase();
       items = items.filter(item => 
-        item.instrument && item.instrument.toUpperCase() === cameraUpper
+        item.instrument && matchesCameraFilter(item.instrument, camera)
       );
     }
     
@@ -266,6 +314,8 @@ module.exports = {
   getLatestSol,
   getRoverInfo,
   ROVERS,
-  calculateEarthDate
+  calculateEarthDate,
+  getCameraCategory,
+  matchesCameraFilter
 };
 
