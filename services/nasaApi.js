@@ -109,14 +109,15 @@ function matchesCameraFilter(cameraName, filterCategory) {
   
   const filterUpper = filterCategory.toUpperCase();
   const cameraCategory = getCameraCategory(cameraName);
+  const cameraUpper = cameraName ? cameraName.toUpperCase() : '';
   
   // If filter is one of the three categories, match by category
   if (['FHAZ', 'RHAZ', 'MAST'].includes(filterUpper)) {
     return cameraCategory === filterUpper;
   }
   
-  // Otherwise, do exact match (for backward compatibility)
-  return cameraName && cameraName.toUpperCase() === filterUpper;
+  // Check if camera name starts with the filter value (e.g., CHEMCAM matches CHEMCAM_RMI)
+  return cameraUpper.startsWith(filterUpper);
 }
 
 /**

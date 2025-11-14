@@ -68,11 +68,22 @@ router.get('/:rover_id', async (req, res) => {
       // Ignore errors
     }
     
+    // Transform cameras to match Rails format (full_name instead of fullName)
+    const cameras = roverInfo.cameras.map(camera => ({
+      name: camera.name,
+      full_name: camera.fullName
+    }));
+    
     const rover = {
-      ...roverInfo,
+      id: roverInfo.id,
+      name: roverInfo.name,
+      landing_date: roverInfo.landing_date,
+      launch_date: roverInfo.launch_date,
+      status: roverInfo.status,
       max_sol: latestSol,
       max_date: calculateMaxDate(roverInfo.landing_date, latestSol),
-      total_photos: totalPhotos
+      total_photos: totalPhotos,
+      cameras: cameras
     };
     
     res.json({ rover });

@@ -24,7 +24,7 @@ router.get('/:rover_id', async (req, res) => {
     const sampleSols = [];
     
     // Sample every 100 sols up to latest
-    for (let sol = 0; sol <= latestSol; sol += 100) {
+    for (let sol = 0; sol <= latestSol; sol += 10) {
       sampleSols.push(sol);
     }
     // Always include latest sol
