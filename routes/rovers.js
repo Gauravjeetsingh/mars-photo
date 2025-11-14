@@ -59,13 +59,54 @@ router.get('/:rover_id', async (req, res) => {
     
     const latestSol = await getLatestSol(roverId);
     
-    // Get approximate total photos
+    // Calculate total photos by sampling multiple sols
+    // This gives a more accurate estimate than just using the latest sol
     let totalPhotos = 0;
     try {
-      const photos = await getPhotos(roverId, { sol: latestSol });
-      totalPhotos = photos.length * latestSol; // Rough estimate
+      // Sample sols at different points in the mission to get average photos per sol
+      const sampleSols = [];
+      const sampleInterval = Math.max(1, Math.floor(latestSol / 10)); // Sample ~10 sols
+      
+      // Sample evenly distributed sols
+      for (let sol = 0; sol <= latestSol; sol += sampleInterval) {
+        sampleSols.push(sol);
+      }
+      // Always include latest sol
+      if (!sampleSols.includes(latestSol)) {
+        sampleSols.push(latestSol);
+      }
+      
+      // Limit to reasonable number of samples (max 20)
+      const samplesToUse = sampleSols.slice(0, 20);
+      
+      let totalSamplePhotos = 0;
+      let successfulSamples = 0;
+      
+      // Get photos for each sample sol
+      for (const sol of samplesToUse) {
+        try {
+          const photos = await getPhotos(roverId, { sol, perPage: 200 });
+          totalSamplePhotos += photos.length;
+          successfulSamples++;
+        } catch (e) {
+          // Skip errors for individual sols
+        }
+      }
+      
+      // Calculate average photos per sol and extrapolate
+      if (successfulSamples > 0) {
+        const avgPhotosPerSol = totalSamplePhotos / successfulSamples;
+        totalPhotos = Math.round(avgPhotosPerSol * latestSol);
+      }
     } catch (e) {
-      // Ignore errors
+      // If sampling fails, try to get at least latest sol count
+      try {
+        const latestPhotos = await getPhotos(roverId, { sol: latestSol, perPage: 200 });
+        // Very rough estimate: assume similar activity throughout mission
+        totalPhotos = Math.round(latestPhotos.length * latestSol);
+      } catch (err) {
+        // Ignore errors
+      }
     }
     
     // Transform cameras to match Rails format (full_name instead of fullName)
