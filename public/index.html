@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mars Photo API - Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .intro {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border-left: 4px solid #667eea;
+        }
+
+        .intro h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        .intro p {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .endpoint {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .endpoint:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.85em;
+            text-transform: uppercase;
+        }
+
+        .method.get {
+            background: #4caf50;
+            color: white;
+        }
+
+        .endpoint-path {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 1.2em;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .endpoint-description {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 1.05em;
+        }
+
+        .parameters {
+            margin-top: 15px;
+        }
+
+        .parameters h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .param-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .param-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .param-list li:last-child {
+            border-bottom: none;
+        }
+
+        .param-name {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .param-type {
+            color: #999;
+            font-size: 0.9em;
+            margin-left: 8px;
+        }
+
+        .param-desc {
+            color: #666;
+            margin-top: 4px;
+            font-size: 0.95em;
+        }
+
+        .example {
+            background: #f8f9fa;
+            border-left: 3px solid #667eea;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 4px;
+        }
+
+        .example-label {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+
+        .example-code {
+            font-family: 'Monaco', 'Courier New', monospace;
+            color: #333;
+            word-break: break-all;
+            font-size: 0.95em;
+        }
+
+        .response {
+            margin-top: 15px;
+        }
+
+        .response h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .rover-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .rover-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .rover-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .rover-card strong {
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        footer {
+            background: #2d2d2d;
+            color: #fff;
+            padding: 30px;
+            text-align: center;
+        }
+
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .badge.required {
+            background: #ff4444;
+            color: white;
+        }
+
+        .badge.optional {
+            background: #4caf50;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .endpoint-path {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Mars Photo API</h1>
+        </header>
+
+        <div class="content">
+            <div class="intro">
+                <h2>Welcome to the Mars Photo API</h2>
+                <p>This API provides access to photos taken by NASA's Mars rovers: <strong>Curiosity</strong>, <strong>Perseverance</strong>, <strong>Opportunity</strong>, and <strong>Spirit</strong>.</p>
+                <p>All endpoints return JSON data and support CORS for cross-origin requests.</p>
+            </div>
+
+            <!-- Rovers Endpoints -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-path">/api/v1/rovers</span>
+                </div>
+                <div class="endpoint-description">
+                    Get a list of all available Mars rovers with their mission information.
+                </div>
+                <div class="example">
+                    <div class="example-label">Example Request</div>
+                    <div class="example-code">GET /api/v1/rovers</div>
+                </div>
+                <div class="response">
+                    <h4>Response</h4>
+                    <div class="code-block">{
+  "rovers": [
+    {
+      "id": 5,
+      "name": "Curiosity",
+      "landing_date": "2012-08-06",
+      "launch_date": "2011-11-26",
+      "status": "active",
+      "max_sol": 4234,
+      "max_date": "2024-01-15",
+      "total_photos": 500000,
+      "cameras": [...]
+    }
+  ]
+}</div>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-path">/api/v1/rovers/:rover_id</span>
+                </div>
+                <div class="endpoint-description">
+                    Get detailed information about a specific rover. Valid rover IDs: <code>curiosity</code>, <code>perseverance</code>, <code>opportunity</code>, <code>spirit</code>.
+                </div>
+                <div class="parameters">
+                    <h4>Path Parameters</h4>
+                    <ul class="param-list">
+                        <li>
+                            <span class="param-name">rover_id</span>
+                            <span class="param-type">string</span>
+                            <span class="badge required">Required</span>
+                            <div class="param-desc">The rover identifier (curiosity, perseverance, opportunity, or spirit)</div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="example">
+                    <div class="example-label">Example Request</div>
+                    <div class="example-code">GET /api/v1/rovers/curiosity</div>
+                </div>
+                <div class="response">
+                    <h4>Response</h4>
+                    <div class="code-block">{
+  "rover": {
+    "id": 5,
+    "name": "Curiosity",
+    "landing_date": "2012-08-06",
+    "launch_date": "2011-11-26",
+    "status": "active",
+    "max_sol": 4234,
+    "max_date": "2024-01-15",
+    "total_photos": 500000,
+    "cameras": [
+      {
+        "name": "FHAZ",
+        "full_name": "Front Hazard Avoidance Camera"
+      },
+      ...
+    ]
+  }
+}</div>
+                </div>
+            </div>
+
+            <!-- Photos Endpoints -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-path">/api/v1/rovers/:rover_id/photos</span>
+                </div>
+                <div class="endpoint-description">
+                    Get photos taken by a specific rover. You must provide either <code>sol</code> or <code>earth_date</code> parameter.
+                </div>
+                <div class="parameters">
+                    <h4>Path Parameters</h4>
+                    <ul class="param-list">
+                        <li>
+                            <span class="param-name">rover_id</span>
+                            <span class="param-type">string</span>
+                            <span class="badge required">Required</span>
+                            <div class="param-desc">The rover identifier</div>
+                        </li>
+                    </ul>
+                    <h4 style="margin-top: 15px;">Query Parameters</h4>
+                    <ul class="param-list">
+                        <li>
+                            <span class="param-name">sol</span>
+                            <span class="param-type">number</span>
+                            <span class="badge optional">Optional</span>
+                            <div class="param-desc">Martian sol (day) number. Either sol or earth_date is required.</div>
+                        </li>
+                        <li>
+                            <span class="param-name">earth_date</span>
+                            <span class="param-type">string (YYYY-MM-DD)</span>
+                            <span class="badge optional">Optional</span>
+                            <div class="param-desc">Earth date. Either sol or earth_date is required.</div>
+                        </li>
+                        <li>
+                            <span class="param-name">camera</span>
+                            <span class="param-type">string</span>
+                            <span class="badge optional">Optional</span>
+                            <div class="param-desc">Filter by camera name (e.g., FHAZ, NAVCAM, MAST)</div>
+                        </li>
+                        <li>
+                            <span class="param-name">page</span>
+                            <span class="param-type">number</span>
+                            <span class="badge optional">Optional</span>
+                            <div class="param-desc">Page number for pagination (default: 0)</div>
+                        </li>
+                        <li>
+                            <span class="param-name">per_page</span>
+                            <span class="param-type">number</span>
+                            <span class="badge optional">Optional</span>
+                            <div class="param-desc">Results per page (default: 25)</div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="example">
+                    <div class="example-label">Example Requests</div>
+                    <div class="example-code">GET /api/v1/rovers/curiosity/photos?sol=1000
+GET /api/v1/rovers/curiosity/photos?earth_date=2015-06-03&camera=FHAZ
+GET /api/v1/rovers/perseverance/photos?sol=500&page=0&per_page=25</div>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-path">/api/v1/rovers/:rover_id/latest_photos</span>
+                </div>
+                <div class="endpoint-description">
+                    Get the latest photos taken by a specific rover (from the most recent sol).
+                </div>
+                <div class="parameters">
+                    <h4>Path Parameters</h4>
+                    <ul class="param-list">
+                        <li>
+                            <span class="param-name">rover_id</span>
+                            <span class="param-type">string</span>
+                            <span class="badge required">Required</span>
+                            <div class="param-desc">The rover identifier</div>
+                        </li>
+                    </ul>
+                    <h4 style="margin-top: 15px;">Query Parameters</h4>
+                    <ul class="param-list">
+                        <li>
+                            <span class="param-name">camera</span>
+                            <span class="param-type">string</span>
+                            <span class="badge optional">Optional</span>
+                            <div class="param-desc">Filter by camera name</div>
+                        </li>
+                        <li>
+                            <span class="param-name">page</span>
+                            <span class="param-type">number</span>
+                            <span class="badge optional">Optional</span>
+                            <div class="param-desc">Page number for pagination (default: 0)</div>
+                        </li>
+                        <li>
+                            <span class="param-name">per_page</span>
+                            <span class="param-type">number</span>
+                            <span class="badge optional">Optional</span>
+                            <div class="param-desc">Results per page (default: 25)</div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="example">
+                    <div class="example-label">Example Request</div>
+                    <div class="example-code">GET /api/v1/rovers/curiosity/latest_photos?camera=MAST</div>
+                </div>
+            </div>
+
+            <!-- Manifest Endpoint -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-path">/api/v1/manifests/:rover_id</span>
+                </div>
+                <div class="endpoint-description">
+                    Get the mission manifest for a rover, including photos grouped by sol.
+                </div>
+                <div class="parameters">
+                    <h4>Path Parameters</h4>
+                    <ul class="param-list">
+                        <li>
+                            <span class="param-name">rover_id</span>
+                            <span class="param-type">string</span>
+                            <span class="badge required">Required</span>
+                            <div class="param-desc">The rover identifier</div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="example">
+                    <div class="example-label">Example Request</div>
+                    <div class="example-code">GET /api/v1/manifests/curiosity</div>
+                </div>
+                <div class="response">
+                    <h4>Response</h4>
+                    <div class="code-block">{
+  "photo_manifest": {
+    "name": "Curiosity",
+    "landing_date": "2012-08-06",
+    "launch_date": "2011-11-26",
+    "status": "active",
+    "max_sol": 4234,
+    "max_date": "2024-01-15",
+    "total_photos": 500000,
+    "photos": [
+      {
+        "sol": 1000,
+        "earth_date": "2015-05-30",
+        "total_photos": 150,
+        "cameras": ["FHAZ", "RHAZ", "NAVCAM"]
+      },
+      ...
+    ]
+  }
+}</div>
+                </div>
+            </div>
+
+            <!-- Health Check -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-path">/health</span>
+                </div>
+                <div class="endpoint-description">
+                    Health check endpoint to verify the API is running.
+                </div>
+                <div class="example">
+                    <div class="example-label">Example Request</div>
+                    <div class="example-code">GET /health</div>
+                </div>
+                <div class="response">
+                    <h4>Response</h4>
+                    <div class="code-block">{
+  "status": "ok"
+}</div>
+                </div>
+            </div>
+
+            <!-- Available Rovers -->
+            <div class="intro" style="margin-top: 40px;">
+                <h2>Available Rovers</h2>
+                <div class="rover-list">
+                    <div class="rover-card">
+                        <strong>Curiosity</strong>
+                        <div style="margin-top: 8px; font-size: 0.9em; color: #666;">Active since 2012</div>
+                    </div>
+                    <div class="rover-card">
+                        <strong>Perseverance</strong>
+                        <div style="margin-top: 8px; font-size: 0.9em; color: #666;">Active since 2021</div>
+                    </div>
+                    <div class="rover-card">
+                        <strong>Opportunity</strong>
+                        <div style="margin-top: 8px; font-size: 0.9em; color: #666;">Complete (2004-2019)</div>
+                    </div>
+                    <div class="rover-card">
+                        <strong>Spirit</strong>
+                        <div style="margin-top: 8px; font-size: 0.9em; color: #666;">Complete (2004-2010)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Mars Photo API</p>
+            <p style="margin-top: 10px; opacity: 0.8; font-size: 0.9em;">
+                Data sourced from NASA's Mars rover missions
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
+
