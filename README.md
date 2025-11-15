@@ -38,6 +38,76 @@ GET /api/v1/rovers/:rover_id/photos?earth_date=2015-06-03
 GET /api/v1/rovers/:rover_id/photos?sol=1000&camera=FHAZ
 ```
 
+## Cameras
+
+Each rover has its own set of cameras. You can filter photos by camera using the `camera` parameter. The camera parameter is case-insensitive and uses exact matching.
+
+### Curiosity Rover Cameras
+
+| Abbreviation | Camera Name |
+|--------------|-------------|
+| FHAZ | Front Hazard Avoidance Camera |
+| RHAZ | Read Hazard Avoidance Camera |
+| MAST | Mast Camera |
+| CHEMCAM | Chemistry and Camera Complex |
+| MAHLI | Mars Hand Lens Imager |
+| MARDI | Mars Descent Imager |
+| NAVCAM | Navigation Camera |
+
+**Note**: The API dynamically handles any camera name returned by NASA's API. While the above are the predefined cameras, the API will also work with camera variants like `CHEMCAM_RMI`, `FHAZ_LEFT_B`, `MAST_LEFT`, `MAST_RIGHT`, `NAV_LEFT_B`, etc., if they appear in NASA's responses.
+
+### Perseverance Rover Cameras
+
+| Abbreviation | Camera Name |
+|--------------|-------------|
+| EDL_RUCAM | Rover Up-Look Camera |
+| EDL_RDCAM | Rover Down-Look Camera |
+| EDL_DDCAM | Descent Stage Down-Look Camera |
+| EDL_PUCAM1 | Parachute Up-Look Camera A |
+| EDL_PUCAM2 | Parachute Up-Look Camera B |
+| NAVCAM_LEFT | Navigation Camera - Left |
+| NAVCAM_RIGHT | Navigation Camera - Right |
+| MCZ_RIGHT | Mast Camera Zoom - Right |
+| MCZ_LEFT | Mast Camera Zoom - Left |
+| FRONT_HAZCAM_LEFT_A | Front Hazard Avoidance Camera - Left |
+| FRONT_HAZCAM_RIGHT_A | Front Hazard Avoidance Camera - Right |
+| REAR_HAZCAM_LEFT | Rear Hazard Avoidance Camera - Left |
+| REAR_HAZCAM_RIGHT | Rear Hazard Avoidance Camera - Right |
+| SKYCAM | MEDA Skycam |
+| SHERLOC_WATSON | SHERLOC WATSON Camera |
+
+### Opportunity Rover Cameras
+
+| Abbreviation | Camera Name |
+|--------------|-------------|
+| FHAZ | Front Hazard Avoidance Camera |
+| RHAZ | Read Hazard Avoidance Camera |
+| NAVCAM | Navigation Camera |
+| PANCAM | Panoramic Camera |
+| MINITES | Miniature Thermal Emission Spectrometer (Mini-TES) |
+| ENTRY | Entry, Descent, and Landing Camera |
+
+**Note**: Opportunity rover is not yet supported (returns 501 error).
+
+### Spirit Rover Cameras
+
+| Abbreviation | Camera Name |
+|--------------|-------------|
+| FHAZ | Front Hazard Avoidance Camera |
+| RHAZ | Read Hazard Avoidance Camera |
+| NAVCAM | Navigation Camera |
+| PANCAM | Panoramic Camera |
+| MINITES | Miniature Thermal Emission Spectrometer (Mini-TES) |
+| ENTRY | Entry, Descent, and Landing Camera |
+
+**Note**: Spirit rover is not yet supported (returns 501 error).
+
+### Camera Filtering
+
+- Camera names are case-insensitive (e.g., `FHAZ`, `fhaz`, `Fhaz` all work)
+- Uses exact matching (e.g., `MAST` only matches exactly "MAST", not "MAST_LEFT")
+- If a camera name from NASA's API doesn't match a predefined camera, it's still supported dynamically
+
 ### Get Latest Photos
 ```
 GET /api/v1/rovers/:rover_id/latest_photos

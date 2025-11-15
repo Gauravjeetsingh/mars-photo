@@ -1,6 +1,8 @@
 const axios = require('axios');
 
 // Rover configurations
+// Note: These are predefined cameras (like Rails seeds.rb), but the API dynamically
+// creates/uses any camera name returned by NASA (like Rails CuriosityScraper does)
 const ROVERS = {
   curiosity: {
     name: 'Curiosity',
@@ -11,15 +13,10 @@ const ROVERS = {
       { name: 'FHAZ', fullName: 'Front Hazard Avoidance Camera' },
       { name: 'RHAZ', fullName: 'Read Hazard Avoidance Camera' },
       { name: 'MAST', fullName: 'Mast Camera' },
-      { name: 'MAST_LEFT', fullName: 'Mast Camera - Left' },
-      { name: 'MAST_RIGHT', fullName: 'Mast Camera - Right' },
       { name: 'CHEMCAM', fullName: 'Chemistry and Camera Complex' },
-      { name: 'CHEMCAM_RMI', fullName: 'Chemistry and Camera Complex - Remote Micro Imager' },
       { name: 'MAHLI', fullName: 'Mars Hand Lens Imager' },
       { name: 'MARDI', fullName: 'Mars Descent Imager' },
-      { name: 'NAVCAM', fullName: 'Navigation Camera' },
-      { name: 'NAV_LEFT_A', fullName: 'Navigation Camera - Left A' },
-      { name: 'NAV_RIGHT_A', fullName: 'Navigation Camera - Right A' }
+      { name: 'NAVCAM', fullName: 'Navigation Camera' }
     ]
   },
   perseverance: {
@@ -76,48 +73,46 @@ const ROVERS = {
 };
 
 /**
- * Map camera name to category (FHAZ, RHAZ, MAST)
- * Returns the category name if the camera belongs to one, otherwise returns null
+ * Get camera info - dynamically creates camera if not in predefined list
+ * This mimics the Rails mechanism: rover.cameras.find_by(name) || rover.cameras.create(name, full_name)
  */
-function getCameraCategory(cameraName) {
+function getCameraInfo(roverName, cameraName) {
   if (!cameraName) return null;
-  const upper = cameraName.toUpperCase();
   
-  // FHAZ category: Front Hazard Avoidance Camera
-  if (upper.startsWith('FHAZ') || upper.includes('FRONT_HAZ') || upper.includes('FRONT HAZ')) {
-    return 'FHAZ';
+  const rover = roverName.toLowerCase();
+  const roverData = ROVERS[rover];
+  
+  if (!roverData) return null;
+  
+  // Try to find in predefined list (like Rails: rover.cameras.find_by(name: camera_name))
+  const predefinedCamera = roverData.cameras.find(
+    c => c.name.toUpperCase() === cameraName.toUpperCase()
+  );
+  
+  if (predefinedCamera) {
+    return {
+      name: predefinedCamera.name,
+      full_name: predefinedCamera.fullName
+    };
   }
   
-  // RHAZ category: Rear Hazard Avoidance Camera
-  if (upper.startsWith('RHAZ') || upper.includes('REAR_HAZ') || upper.includes('REAR HAZ') || upper.includes('READ HAZ')) {
-    return 'RHAZ';
-  }
-  
-  // MAST category: Mast Camera
-  if (upper.startsWith('MAST')) {
-    return 'MAST';
-  }
-  
-  return null;
+  // If not found, dynamically create/use the camera name (like Rails: rover.cameras.create(name: camera_name, full_name: camera_name))
+  // In Rails, it uses the camera_name as both name and full_name if not predefined
+  return {
+    name: cameraName,
+    full_name: cameraName
+  };
 }
 
 /**
- * Check if a camera matches the filter category
+ * Check if a camera matches the filter (exact match like Rails)
+ * Rails uses: rover.cameras.find_by(name: params[:camera].upcase)
  */
-function matchesCameraFilter(cameraName, filterCategory) {
-  if (!filterCategory) return true;
+function matchesCameraFilter(cameraName, filterCamera) {
+  if (!filterCamera) return true;
   
-  const filterUpper = filterCategory.toUpperCase();
-  const cameraCategory = getCameraCategory(cameraName);
-  const cameraUpper = cameraName ? cameraName.toUpperCase() : '';
-  
-  // If filter is one of the three categories, match by category
-  if (['FHAZ', 'RHAZ', 'MAST'].includes(filterUpper)) {
-    return cameraCategory === filterUpper;
-  }
-  
-  // Check if camera name starts with the filter value (e.g., CHEMCAM matches CHEMCAM_RMI)
-  return cameraUpper.startsWith(filterUpper);
+  // Exact match (case-insensitive) like Rails
+  return cameraName && cameraName.toUpperCase() === filterCamera.toUpperCase();
 }
 
 /**
@@ -149,23 +144,28 @@ async function getCuriosityPhotos(params = {}) {
       item.extended && item.extended.sample_type === 'full'
     );
     
-    return items.map((item, index) => ({
-      id: `${item.sol}-${item.instrument}-${index}`,
-      sol: item.sol,
-      camera: {
-        name: item.instrument,
-        full_name: ROVERS.curiosity.cameras.find(c => c.name === item.instrument)?.fullName || item.instrument
-      },
-      img_src: item.https_url,
-      earth_date: calculateEarthDate(ROVERS.curiosity.landingDate, item.sol),
-      rover: {
-        id: 5,
-        name: 'Curiosity',
-        landing_date: ROVERS.curiosity.landingDate,
-        launch_date: ROVERS.curiosity.launchDate,
-        status: ROVERS.curiosity.status
-      }
-    }));
+    return items.map((item, index) => {
+      // Use dynamic camera mechanism (like Rails: camera_from_json)
+      const cameraInfo = getCameraInfo('curiosity', item.instrument);
+      
+      return {
+        id: `${item.sol}-${item.instrument}-${index}`,
+        sol: item.sol,
+        camera: cameraInfo || {
+          name: item.instrument,
+          full_name: item.instrument
+        },
+        img_src: item.https_url,
+        earth_date: calculateEarthDate(ROVERS.curiosity.landingDate, item.sol),
+        rover: {
+          id: 5,
+          name: 'Curiosity',
+          landing_date: ROVERS.curiosity.landingDate,
+          launch_date: ROVERS.curiosity.launchDate,
+          status: ROVERS.curiosity.status
+        }
+      };
+    });
   } catch (error) {
     console.error('Error fetching Curiosity photos:', error.message);
     throw error;
@@ -192,35 +192,39 @@ async function getPerseverancePhotos(params = {}) {
     const response = await axios.get(url);
     let images = response.data.images || [];
     
-    // Filter by camera if specified
+    // Filter by camera if specified (exact match like Rails)
     if (camera) {
-      const cameraUpper = camera.toUpperCase();
       images = images.filter(img => 
         img.camera && img.camera.instrument && 
-        img.camera.instrument.toUpperCase() === cameraUpper
+        matchesCameraFilter(img.camera.instrument, camera)
       );
     }
     
     // Only return full resolution images
     images = images.filter(img => img.sample_type === 'Full');
     
-    return images.map((img, index) => ({
-      id: `${img.sol}-${img.camera.instrument}-${index}`,
-      sol: img.sol,
-      camera: {
-        name: img.camera.instrument,
-        full_name: ROVERS.perseverance.cameras.find(c => c.name === img.camera.instrument)?.fullName || img.camera.instrument
-      },
-      img_src: img.image_files.large,
-      earth_date: calculateEarthDate(ROVERS.perseverance.landingDate, img.sol),
-      rover: {
-        id: 6,
-        name: 'Perseverance',
-        landing_date: ROVERS.perseverance.landingDate,
-        launch_date: ROVERS.perseverance.launchDate,
-        status: ROVERS.perseverance.status
-      }
-    }));
+    return images.map((img, index) => {
+      // Use dynamic camera mechanism (like Rails)
+      const cameraInfo = getCameraInfo('perseverance', img.camera.instrument);
+      
+      return {
+        id: `${img.sol}-${img.camera.instrument}-${index}`,
+        sol: img.sol,
+        camera: cameraInfo || {
+          name: img.camera.instrument,
+          full_name: img.camera.instrument
+        },
+        img_src: img.image_files.large,
+        earth_date: calculateEarthDate(ROVERS.perseverance.landingDate, img.sol),
+        rover: {
+          id: 6,
+          name: 'Perseverance',
+          landing_date: ROVERS.perseverance.landingDate,
+          launch_date: ROVERS.perseverance.launchDate,
+          status: ROVERS.perseverance.status
+        }
+      };
+    });
   } catch (error) {
     console.error('Error fetching Perseverance photos:', error.message);
     throw error;
@@ -316,7 +320,7 @@ module.exports = {
   getRoverInfo,
   ROVERS,
   calculateEarthDate,
-  getCameraCategory,
+  getCameraInfo,
   matchesCameraFilter
 };
 

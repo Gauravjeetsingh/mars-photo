@@ -573,6 +573,241 @@ GET /api/v1/rovers/perseverance/photos?sol=500&page=0&per_page=25</div>
                     </div>
                 </div>
             </div>
+
+            <!-- Cameras Section -->
+            <div class="intro" style="margin-top: 40px;">
+                <h2>Cameras</h2>
+                <p style="margin-bottom: 20px;">Each rover has its own set of cameras. You can filter photos by camera using the <code>camera</code> parameter. Camera names are case-insensitive and use exact matching.</p>
+
+                <!-- Curiosity Cameras -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1.4em;">Curiosity Rover Cameras</h3>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 6px; overflow: hidden;">
+                            <thead>
+                                <tr style="background: #667eea; color: white;">
+                                    <th style="padding: 12px; text-align: left; font-weight: 600;">Abbreviation</th>
+                                    <th style="padding: 12px; text-align: left; font-weight: 600;">Camera Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">FHAZ</td>
+                                    <td style="padding: 10px;">Front Hazard Avoidance Camera</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">RHAZ</td>
+                                    <td style="padding: 10px;">Read Hazard Avoidance Camera</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">MAST</td>
+                                    <td style="padding: 10px;">Mast Camera</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">CHEMCAM</td>
+                                    <td style="padding: 10px;">Chemistry and Camera Complex</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">MAHLI</td>
+                                    <td style="padding: 10px;">Mars Hand Lens Imager</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">MARDI</td>
+                                    <td style="padding: 10px;">Mars Descent Imager</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">NAVCAM</td>
+                                    <td style="padding: 10px;">Navigation Camera</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p style="margin-top: 15px; padding: 12px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px; font-size: 0.95em; color: #1565c0;">
+                        <strong>Note:</strong> The API dynamically handles any camera name returned by NASA's API. While the above are the predefined cameras, the API will also work with camera variants like <code>CHEMCAM_RMI</code>, <code>FHAZ_LEFT_B</code>, <code>MAST_LEFT</code>, <code>MAST_RIGHT</code>, <code>NAV_LEFT_B</code>, etc., if they appear in NASA's responses.
+                    </p>
+                </div>
+
+                <!-- Perseverance Cameras -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1.4em;">Perseverance Rover Cameras</h3>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 6px; overflow: hidden;">
+                            <thead>
+                                <tr style="background: #667eea; color: white;">
+                                    <th style="padding: 12px; text-align: left; font-weight: 600;">Abbreviation</th>
+                                    <th style="padding: 12px; text-align: left; font-weight: 600;">Camera Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">EDL_RUCAM</td>
+                                    <td style="padding: 10px;">Rover Up-Look Camera</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">EDL_RDCAM</td>
+                                    <td style="padding: 10px;">Rover Down-Look Camera</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">EDL_DDCAM</td>
+                                    <td style="padding: 10px;">Descent Stage Down-Look Camera</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">EDL_PUCAM1</td>
+                                    <td style="padding: 10px;">Parachute Up-Look Camera A</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">EDL_PUCAM2</td>
+                                    <td style="padding: 10px;">Parachute Up-Look Camera B</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">NAVCAM_LEFT</td>
+                                    <td style="padding: 10px;">Navigation Camera - Left</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">NAVCAM_RIGHT</td>
+                                    <td style="padding: 10px;">Navigation Camera - Right</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">MCZ_RIGHT</td>
+                                    <td style="padding: 10px;">Mast Camera Zoom - Right</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">MCZ_LEFT</td>
+                                    <td style="padding: 10px;">Mast Camera Zoom - Left</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">FRONT_HAZCAM_LEFT_A</td>
+                                    <td style="padding: 10px;">Front Hazard Avoidance Camera - Left</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">FRONT_HAZCAM_RIGHT_A</td>
+                                    <td style="padding: 10px;">Front Hazard Avoidance Camera - Right</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">REAR_HAZCAM_LEFT</td>
+                                    <td style="padding: 10px;">Rear Hazard Avoidance Camera - Left</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">REAR_HAZCAM_RIGHT</td>
+                                    <td style="padding: 10px;">Rear Hazard Avoidance Camera - Right</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">SKYCAM</td>
+                                    <td style="padding: 10px;">MEDA Skycam</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">SHERLOC_WATSON</td>
+                                    <td style="padding: 10px;">SHERLOC WATSON Camera</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Opportunity Cameras -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1.4em;">Opportunity Rover Cameras</h3>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 6px; overflow: hidden;">
+                            <thead>
+                                <tr style="background: #667eea; color: white;">
+                                    <th style="padding: 12px; text-align: left; font-weight: 600;">Abbreviation</th>
+                                    <th style="padding: 12px; text-align: left; font-weight: 600;">Camera Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">FHAZ</td>
+                                    <td style="padding: 10px;">Front Hazard Avoidance Camera</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">RHAZ</td>
+                                    <td style="padding: 10px;">Read Hazard Avoidance Camera</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">NAVCAM</td>
+                                    <td style="padding: 10px;">Navigation Camera</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">PANCAM</td>
+                                    <td style="padding: 10px;">Panoramic Camera</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">MINITES</td>
+                                    <td style="padding: 10px;">Miniature Thermal Emission Spectrometer (Mini-TES)</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">ENTRY</td>
+                                    <td style="padding: 10px;">Entry, Descent, and Landing Camera</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p style="margin-top: 15px; padding: 12px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; font-size: 0.95em; color: #856404;">
+                        <strong>Note:</strong> Opportunity rover is not yet supported (returns 501 error).
+                    </p>
+                </div>
+
+                <!-- Spirit Cameras -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1.4em;">Spirit Rover Cameras</h3>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 6px; overflow: hidden;">
+                            <thead>
+                                <tr style="background: #667eea; color: white;">
+                                    <th style="padding: 12px; text-align: left; font-weight: 600;">Abbreviation</th>
+                                    <th style="padding: 12px; text-align: left; font-weight: 600;">Camera Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">FHAZ</td>
+                                    <td style="padding: 10px;">Front Hazard Avoidance Camera</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">RHAZ</td>
+                                    <td style="padding: 10px;">Read Hazard Avoidance Camera</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">NAVCAM</td>
+                                    <td style="padding: 10px;">Navigation Camera</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">PANCAM</td>
+                                    <td style="padding: 10px;">Panoramic Camera</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e0e0e0;">
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">MINITES</td>
+                                    <td style="padding: 10px;">Miniature Thermal Emission Spectrometer (Mini-TES)</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 10px; font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; color: #667eea;">ENTRY</td>
+                                    <td style="padding: 10px;">Entry, Descent, and Landing Camera</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p style="margin-top: 15px; padding: 12px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; font-size: 0.95em; color: #856404;">
+                        <strong>Note:</strong> Spirit rover is not yet supported (returns 501 error).
+                    </p>
+                </div>
+
+                <!-- Camera Filtering Info -->
+                <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #667eea;">
+                    <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1.2em;">Camera Filtering</h3>
+                    <ul style="list-style: none; padding-left: 0;">
+                        <li style="padding: 8px 0; border-bottom: 1px solid #e0e0e0;">
+                            <strong>Case-insensitive:</strong> Camera names are case-insensitive (e.g., <code>FHAZ</code>, <code>fhaz</code>, <code>Fhaz</code> all work)
+                        </li>
+                        <li style="padding: 8px 0; border-bottom: 1px solid #e0e0e0;">
+                            <strong>Exact matching:</strong> Uses exact matching (e.g., <code>MAST</code> only matches exactly "MAST", not "MAST_LEFT")
+                        </li>
+                        <li style="padding: 8px 0;">
+                            <strong>Dynamic support:</strong> If a camera name from NASA's API doesn't match a predefined camera, it's still supported dynamically
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <footer>
