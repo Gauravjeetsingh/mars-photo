@@ -131,18 +131,13 @@ async function getCuriosityPhotos(params = {}) {
   try {
     const response = await axios.get(url);
     let items = response.data.items || [];
-    
+
     // Filter by camera if specified
     if (camera) {
       items = items.filter(item => 
         item.instrument && matchesCameraFilter(item.instrument, camera)
       );
     }
-    
-    // Only return full resolution images
-    items = items.filter(item => 
-      item.extended && item.extended.sample_type === 'full'
-    );
     
     return items.map((item, index) => {
       // Use dynamic camera mechanism (like Rails: camera_from_json)
@@ -199,9 +194,6 @@ async function getPerseverancePhotos(params = {}) {
         matchesCameraFilter(img.camera.instrument, camera)
       );
     }
-    
-    // Only return full resolution images
-    images = images.filter(img => img.sample_type === 'Full');
     
     return images.map((img, index) => {
       // Use dynamic camera mechanism (like Rails)
